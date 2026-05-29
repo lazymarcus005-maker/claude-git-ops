@@ -1,0 +1,14 @@
+services:
+  gitlab-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile.gitlab-mcp
+    image: gitops-gitlab-mcp:latest
+    environment:
+      - GITLAB_PERSONAL_ACCESS_TOKEN=${GITLAB_TOKEN}
+      - GITLAB_API_URL=${GITLAB_URL}/api/v4
+    stdin_open: true
+    tty: false
+    restart: "no"
+    # stdio mode — Claude Code spawns this container per session
+    # Do NOT expose ports; communication is via stdin/stdout

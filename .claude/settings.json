@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "gitlab": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e", "GITLAB_PERSONAL_ACCESS_TOKEN",
+        "-e", "GITLAB_API_URL",
+        "--network", "host",
+        "gitops-gitlab-mcp:latest"
+      ],
+      "env": {
+        "GITLAB_PERSONAL_ACCESS_TOKEN": "${GITLAB_TOKEN}",
+        "GITLAB_API_URL": "${GITLAB_URL}/api/v4"
+      }
+    }
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(git branch*)",
+      "Bash(git log*)",
+      "Bash(git status*)",
+      "Read(.claude/memory/**)",
+      "Write(.claude/memory/**)",
+      "Read(request/**)",
+      "Read(SRS.md)",
+      "Read(templates/**)",
+      "Read(agents/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "mcp__gitlab__create_milestone|mcp__gitlab__create_issue",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[gitops] GitLab item created — memory updated'"
+          }
+        ]
+      }
+    ]
+  }
+}
